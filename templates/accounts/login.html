@@ -1,0 +1,22 @@
+{% extends 'blog/base.html' %}
+{% load materializecss %}
+
+{% block content %}
+<div class="card hoverable z-depth-2">
+    <div class="card-content">
+        <h4 class="center-align grey-text lighten-1">Log In</h4>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.username|materializecss:'icon=person' }}
+            {{ form.password|materializecss:'icon=lock' }}
+            <div class="center-align">
+                <button class="btn waves-effect z-depth-1 mtop" type="submit" name="action">Submit</button>
+            </div>
+        </form>
+        <div class="mtop pbtm">
+            <small class="grey-text lighten-2 left">New here? <a class="orange-text" href="{% url 'register' %}">Sign Up!</a></small>
+            <small class="right grey-text lighten-2">Forgot Pasword? <a class=" orange-text" href="{% url 'password_reset' %}">Reset</a></small>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -53,7 +53,10 @@ coverage.xml
 
 # Django stuff:
 *.log
+*.pot
+*.pyc
 local_settings.py
+media/profile_pics/*
 db.sqlite3
 
 # Flask stuff:

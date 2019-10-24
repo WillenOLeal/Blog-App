@@ -1,0 +1,71 @@
+{% extends 'blog/base.html' %}
+{% load materializecss %}
+{% block content %}
+        <div class="card-panel grey lighten-5 z-depth-2">
+            <div class="row valign-wrapper hide-on-small-only">
+                <div class="col s12 m5 center-align">
+                  {% if user.profile.picture %}
+                    <img style="margin-top:12%" width="125" height="125" src="{{ user.profile.picture.url }}" alt="profile-picture" class=" circle responsive-img z-depth-3">
+                  {% else %}
+                    <img style="margin-top:12%" width="125" height="125" src="/media/default.jpg" alt="profile-picture" class=" circle responsive-img z-depth-3">
+                  {% endif %}
+                </div>
+                <div class="col s12 m7">
+                  <h5 class="teal-text">{{ user.username }}</h5>
+                  <span class="grey-text">{{ user.email }}</span>
+                  <div class="mtop">
+                  </div>
+                </div>
+            </div>
+            <div class="row hide-on-med-and-up center-align">
+                <div class="col s12 m6">
+                  {% if user.profile.picture %}
+                    <img style="margin-top:12%" width="125" height="125" src="{{ user.profile.picture.url }}" alt="profile-picture" class=" circle responsive-img z-depth-3">
+                  {% else %}
+                    <img style="margin-top:12%" width="125" height="125" src="/media/default.jpg" alt="profile-picture" class=" circle responsive-img z-depth-3">
+                  {% endif %}
+                </div>
+                <div class="col s12 m6">
+                  <h5 class="teal-text">{{ user.username }}</h5>
+                  <span class="grey-text">{{ user.email }}</span>
+                  <div class="mtop">
+                  </div>
+                </div>
+            </div>
+          </div>
+
+          <div class="card" id="hideme" style="display: none">
+              <div class="card-content center-align z-depth-2">
+                  <h5 class="grey-text lighten-1">Edit Profile</h5>
+                  <form method="POST" enctype="multipart/form-data">
+                  {% csrf_token %}
+                    {{ form | materializecss }}
+                    {{ profile_form.picture |materializecss:'s12' }}
+                  <button type="submit" class="btn-floating waves-effect waves-light teal"><i class="material-icons">save</i></button>
+                  </form>
+                  <div class="pbtm">
+                    <small class="left" onclick="return confirm('Are you sure? All your data wil be deleted.')"><a href="{% url 'profile_delete' %}" class="orange-text">Delete Account?</a></small>
+                  </div>
+              </div>
+          </div>
+
+          <div class="fixed-action-btn">
+            <a class="btn-floating btn-large red lighten-1">
+              <i class="large material-icons">perm_identity</i>
+            </a>
+            <ul>
+              <li><a href="{% url 'profile_reset_picture' %}" class="btn-floating amber lighten-1 tooltipped" data-position="left" data-tooltip="Reset Profile Image"><i class="material-icons">portrait</i></a></li>
+              <li><a class="hideit btn-floating orange darken-1 tooltipped" data-position="left" data-tooltip="Edit Profile Info"><i class="material-icons">create</i></a></li>
+            </ul>
+          </div>
+{% endblock %}
+
+{% block custom_js %}
+<script>
+  $(document).ready(function(){
+   $('.fixed-action-btn').floatingActionButton();
+   $('.tooltipped').tooltip();
+});
+</script>
+{% endblock %}
+

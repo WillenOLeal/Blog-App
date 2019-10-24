@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+  <title>GenBlog | {% block title %}{% endblock %}</title>
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="{% static 'css/materialize.css' %}" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="{% static 'css/style.css' %}" type="text/css" rel="stylesheet" media="screen,projection"/>
+   <!-- Compiled and minified CSS -->
+</head>
+<body>
+  <header>
+    <nav class="mbtm-nav">
+      <div class="nav-wrapper teal lighten-1">
+        <div class="container">
+          <a href="#!" class="brand-logo">GenBlog</a>
+          <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+          <ul class="right hide-on-med-and-down">
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">About</a></li>
+            {% if user.is_authenticated %}
+              <li><a href="{% url 'profile' %}">Profile</a></li>
+              <li><a href="{% url 'logout' %}">Logout</a></li>
+            {% else %}
+              <li><a href="{% url 'login' %}">Login</a></li>
+              <li><a href="{% url 'register' %}">Signup</a></li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <ul class="sidenav collapsible" id="mobile-demo">
+      <li><a href="#">Blog<i class="material-icons left">view_headline</i></a></li>
+      <li><a href="#">About<i class="material-icons left">help_outline</i></a></li>
+      {% if user.is_authenticated %}
+        <li><a href="{% url 'profile' %}">Profile<i class="material-icons left">portrait</i></a></li>
+        <li><a href="{% url 'logout' %}">Logout<i class="material-icons left">highlight_off</i></a></li>
+      {% else %}
+        <li><a href="{% url 'login' %}">Login<i class="material-icons left">person</i></a></li>
+        <li><a href="{% url 'register' %}">SignUp<i class="material-icons left">person_add</i></a></li>
+      {% endif %}
+    </ul>
+  </header>
+
+  <main class="container">
+    <div class="row">
+      <div class="col s12 m8">
+        {% if form.errors %}
+          {% for field in form %}
+              {% for error in field.errors %}
+                <div class="materialert danger">
+                    <i class="material-icons">error_outline</i>
+                    {{ error|escape }}
+                </div>
+              {% endfor %}
+          {% endfor %}
+          {% for error in form.non_field_errors %}
+              <div class="materialert danger">
+                  <i class="material-icons">error_outline</i>
+                  {{ error|escape }}
+              </div>
+          {% endfor %}
+        {% endif %}
+
+        {% if messages %}
+          {% for message in messages %}
+            {% if message.tags %}
+              <div class="materialert {{ message.tags }} z-depth-3">
+                <i class="material-icons">info_outline</i>
+                {{ message }}
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+      </div>
+      <div class="col m4 hide-on-small-only">
+     <!--    <div class="row">
+        <div class="input-field col s12">
+          <i class="material-icons prefix">search</i>
+          <input type="text" id="autocomplete-input" class="autocomplete">
+          <label for="autocomplete-input">search the best</label>
+        </div>
+      </div> -->
+      </div>
+    </div>
+  </main>
+
+
+  <!--  Scripts-->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="{% static 'js/materialize.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/app.js' %}" type="text/javascript"></script>
+  {% block custom_js %}
+  {% endblock %}
+  </body>
+</html>
