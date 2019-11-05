@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model
 
 class Post(models.Model):
     """ Post has a many-to-one relationship with its respective User"""
-    thumbnail = models.ImageField()
     title = models.CharField(max_length=100)
     body = models.TextField()
     published_at = models.DateTimeField(auto_now_add=True)

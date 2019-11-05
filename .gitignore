@@ -57,6 +57,7 @@ coverage.xml
 *.pyc
 local_settings.py
 media/profile_pics/*
+!media/profile_pics/.gitkeep
 db.sqlite3
 
 # Flask stuff:
