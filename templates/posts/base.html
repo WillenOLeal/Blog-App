@@ -16,10 +16,10 @@
     <nav class="mbtm-nav">
       <div class="nav-wrapper teal lighten-1">
         <div class="container">
-          <a href="#!" class="brand-logo">GenBlog</a>
+          <a href="{% url 'post_list' %}" class="brand-logo">Blog</a>
           <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
           <ul class="right hide-on-med-and-down">
-            <li><a href="#">Blog</a></li>
+            <li><a href="{% url 'post_list' %}">Blog</a></li>
             <li><a href="#">About</a></li>
             {% if user.is_authenticated %}
               <li><a href="{% url 'profile' %}">Profile</a></li>
@@ -34,7 +34,7 @@
     </nav>
 
     <ul class="sidenav collapsible" id="mobile-demo">
-      <li><a href="#">Blog<i class="material-icons left">view_headline</i></a></li>
+      <li><a href="{% url 'post_list' %}">Blog<i class="material-icons left">view_headline</i></a></li>
       <li><a href="#">About<i class="material-icons left">help_outline</i></a></li>
       {% if user.is_authenticated %}
         <li><a href="{% url 'profile' %}">Profile<i class="material-icons left">portrait</i></a></li>

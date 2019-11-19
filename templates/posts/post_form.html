@@ -4,14 +4,11 @@
 {% block content %}
 <div class="card hoverable z-depth-2">
     <div class="card-content">
-        <h4 class="center-align grey-text lighten-1">Change Password</h4>
+        <h4 class="center-align grey-text lighten-1">{{ post_action | title }} Post</h4>
         <form method="POST">
             {% csrf_token %}
-            {{ form.new_password1|materializecss:'icon=lock' }}
-            {{ form.new_password2|materializecss:'icon=lock' }}
-            <div class="center-align pbtm">
+            {{ form|materializecss }}
                 <button class="btn waves-effect z-depth-1 mtop" type="submit" name="action">Submit</button>
-            </div>
         </form>
     </div>
 </div>

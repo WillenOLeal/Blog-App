@@ -1,0 +1,22 @@
+{% extends 'posts/base.html' %}
+
+{% block content %}
+    <div class="card z-depth-2">
+        <div class="card-content">
+          <span style="margin-bottom: 0px" class="card-title teal-text">{{ post.title|title }}</span>
+          <small class="grey-text">By {{ post.author.username }} about {{ post.published_at|timesince }} ago</small>
+          <hr><br>
+            {{ post.body|linebreaks}}
+        </div>
+        <div class="card-action">
+          <span class="orange-text right"> {{ post.comments_count }} </span><i style="margin-right: 1%" class="teal-text right material-icons">comment</i>
+          <span class="orange-text right"> {{ post.views_count }} </span><i style="margin-right: 1%" class="teal-text right material-icons">visibility</i>
+          <a href="{% url 'post_like' post.slug %}"><span class="right"> {{ post.likes_count }} </span><i style="margin-right: 1%" class="teal-text right material-icons">thumb_up</i></a>
+          {% if post.author == user %}
+            <a href="{% url 'post_update' post.slug %}" class="left">Update</a>
+            <a href="{% url 'post_delete' post.slug %}" class="red-text left">Delete</a>
+          {% endif %}
+        </div>
+    </div>
+    <a href="{% url 'post_list' %}" class="btn teal z-depth-2">Go Back</a>
+{% endblock %}
