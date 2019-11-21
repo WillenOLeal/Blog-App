@@ -35,7 +35,7 @@ class Post(models.Model):
 
 class Comment(models.Model):
     """ Comment has a many-to-one relationship with both User and Post """
-    authror = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     body = models.TextField()
     published_at = models.DateTimeField(auto_now_add=True)
@@ -55,7 +55,7 @@ class Like(models.Model):
 
 class Visualization(models.Model):
     """ Visualization has a many-to-one relationship with both User and Post """
-    authror = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
     def __str__(self):

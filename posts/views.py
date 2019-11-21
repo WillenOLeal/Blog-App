@@ -37,6 +37,12 @@ class PostListView(ListView):
 class PostDetailView(DetailView):
     model = Post
 
+    def get_object(self, **kwargs):
+        object = super().get_object(**kwargs)
+        if self.request.user.is_authenticated:
+            Visualization.objects.get_or_create(author=self.request.user, post=object)
+        return object
+
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
@@ -79,9 +85,7 @@ def like_it(request, slug):
     try:
         like = Like.objects.get(author=request.user, post=post)
         like.delete()
-        # return redirect(reverse('post_list'))
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     except Like.DoesNotExist:
         Like.objects.create(author=request.user, post=post)
-        # return redirect(reverse('post_list'))
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

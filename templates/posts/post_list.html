@@ -13,7 +13,7 @@
                   </p>
                 </div>
                 <div class="card-action">
-                  <small class="grey-text lighten-1">{{ post.author.username }} @{{ post.published_at|date:"M d, Y" }}</small>
+                  <small class="grey-text lighten-1">{{ post.author.username }} {{ post.published_at|date:"M d, Y" }}</small>
                   <span class="orange-text right"> {{ post.comments_count }} </span><i style="margin-right: 1%" class="teal-text right material-icons">comment</i>
                   <span class="orange-text right"> {{ post.views_count }} </span><i style="margin-right: 1%" class="teal-text right material-icons">visibility</i>
                   <a href="{% url 'post_like' post.slug %}"><span class="right"> {{ post.likes_count }} </span><i style="margin-right: 1%" class="teal-text right material-icons">thumb_up</i></a>
