@@ -12,6 +12,6 @@ urlpatterns = [
     path('password-reset-complete/', views.CustomPasswordResetCompleteView.as_view(), name='password_reset_complete'),
     path('profile/', views.user_profile, name='profile'),
     path('profile-delete/', views.user_delete, name='profile_delete'),
-    path('profile-picture-delete/', views.reset_profile_picture, name='profile_reset_picture'),
+    #path('profile-picture-delete/', views.reset_profile_picture, name='profile_reset_picture'),
 
 ]

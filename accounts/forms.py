@@ -1,5 +1,6 @@
 from django import forms
-from .models import CustomUser, Profile
+# from .models import CustomUser, Profile
+from .models import CustomUser
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth import get_user_model
@@ -55,9 +56,9 @@ class UpdateCustomUser(forms.ModelForm):
         raise forms.ValidationError(f'Username "{email}" is already in use.')
 
 
-class UpdateProfile(forms.ModelForm):
-    picture = forms.ImageField(widget=forms.FileInput, required=False)
+# class UpdateProfile(forms.ModelForm):
+#     picture = forms.ImageField(widget=forms.FileInput, required=False)
 
-    class Meta:
-        model = Profile
-        fields = ['picture']
+#     class Meta:
+#         model = Profile
+#         fields = ['picture']

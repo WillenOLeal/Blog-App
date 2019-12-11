@@ -10,7 +10,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
-from .forms import CustomUserCreationForm, UpdateCustomUser, UpdateProfile
+#from .forms import CustomUserCreationForm, UpdateCustomUser, UpdateProfile
+from .forms import CustomUserCreationForm, UpdateCustomUser
 
 
 class CustomSignUp(SuccessMessageMixin, CreateView):
@@ -46,27 +47,49 @@ class CustomPasswordResetCompleteView(PasswordResetCompleteView):
     template_name = 'accounts/password_reset_complete.html'
 
 
+# @login_required
+# def user_profile(request):
+#     """ Profile page for the user, Renders 2 forms, one for username and password,
+#     and the other for the image upload """
+#     form = UpdateCustomUser(request.POST or None, instance=request.user)
+#     profile_form = UpdateProfile(request.POST or None, request.FILES or None, instance=request.user.profile)
+
+#     if form.is_valid() and profile_form.is_valid():
+#         form.clean_username()
+#         form.clean_email()
+#         form.save()
+#         profile_form.save()
+#         messages.success(request, 'Your profile was updated successfully!')
+#         return redirect('profile')
+
+#     context = {
+#         'form': form,
+#         'profile_form': profile_form
+#     }
+
+#     return render(request, 'accounts/profile.html', context)
+
+
 @login_required
 def user_profile(request):
     """ Profile page for the user, Renders 2 forms, one for username and password,
     and the other for the image upload """
     form = UpdateCustomUser(request.POST or None, instance=request.user)
-    profile_form = UpdateProfile(request.POST or None, request.FILES or None, instance=request.user.profile)
 
-    if form.is_valid() and profile_form.is_valid():
+    if form.is_valid():
         form.clean_username()
         form.clean_email()
         form.save()
-        profile_form.save()
         messages.success(request, 'Your profile was updated successfully!')
         return redirect('profile')
 
     context = {
-        'form': form,
-        'profile_form': profile_form
+        'form': form
     }
 
     return render(request, 'accounts/profile.html', context)
+
+
 
 
 @login_required
@@ -81,16 +104,16 @@ def user_delete(request):
         return redirect('profile')
 
 
-@login_required
-def reset_profile_picture(request):
-    try:
-        user = get_user_model().objects.get(id=request.user.id)
-        if user.profile.picture:
-            pic_url = user.profile.picture.url
-            if pic_url != '/media/default.jpg':
-                user.profile.picture.delete()
-            return redirect('profile')
-        return redirect('profile')
-    except:
-        messages.error(request, 'Failed')
-        return redirect('profile')
+# @login_required
+# def reset_profile_picture(request):
+#     try:
+#         user = get_user_model().objects.get(id=request.user.id)
+#         if user.profile.picture:
+#             pic_url = user.profile.picture.url
+#             if pic_url != '/media/default.jpg':
+#                 user.profile.picture.delete()
+#             return redirect('profile')
+#         return redirect('profile')
+#     except:
+#         messages.error(request, 'Failed')
+#         return redirect('profile')
