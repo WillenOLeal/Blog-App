@@ -2,6 +2,15 @@
 
 {% block content %}
     {% if posts %}
+         <form  action="{% url "post_search" %}" method="get">
+           <div class="row">
+              <div class="input-field col s12">
+                <i class="material-icons prefix">search</i>
+                <input name="search_string" type="text" id="search_string">
+                <label for="search_string">Search Posts</label>
+              </div>
+            </div>
+        </form> 
         {% for post in posts %}
             <div class="card z-depth-2">
                 <div class="card-content">
@@ -24,14 +33,16 @@
         <div class="card z-depth-2">
             <div class="card-content center-align">
                 <i class="grey-text lighten-1 medium material-icons">folder_open</i>
-                <h4 class="grey-text lighten-1 mtzero">Nothing Posted Yet...</h4>
-                <small class="grey-text lighten-2"><a class="orange-text" href="{{ request.scheme }}://{{ request.get_host }}{% url 'post_create' %}">Be the first!</a></small>
+                <h4 class="grey-text lighten-1 mtzero">No Posts Found...</h4>
+                {% comment %} <small class="grey-text lighten-2"><a class="orange-text" href="{{ request.scheme }}://{{ request.get_host }}{% url 'post_create' %}">Be the first!</a></small> {% endcomment %}
             </div>
         </div>
     {% endif %}
-    <div class="fixed-action-btn">
-      <a href="{% url 'post_create' %}" class="btn-floating btn-large">
-        <i class="large material-icons teal lighten-1">add</i>
-      </a>
-    </div>
+    {% if user.is_authenticated %}
+      <div class="fixed-action-btn">
+        <a href="{% url 'post_create' %}" class="btn-floating btn-large">
+          <i class="large material-icons teal lighten-1">add</i>
+        </a>
+      </div>
+    {% endif %}
 {% endblock %}

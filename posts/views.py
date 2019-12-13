@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from .forms import PostForm
 from django.http import HttpResponseRedirect
+from django.db.models import Q
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
@@ -40,7 +41,8 @@ class PostDetailView(DetailView):
     def get_object(self, **kwargs):
         object = super().get_object(**kwargs)
         if self.request.user.is_authenticated:
-            Visualization.objects.get_or_create(author=self.request.user, post=object)
+            Visualization.objects.get_or_create(
+                author=self.request.user, post=object)
         return object
 
 
@@ -77,6 +79,17 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if post.author == self.request.user:
             return True
         return False
+
+
+class SearchResultView(ListView):
+    model = Post
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        query = self.request.GET.get('search_string')
+        return Post.objects.filter(
+            Q(title__icontains=query) | Q(body__icontains=query)
+        )
 
 
 @login_required

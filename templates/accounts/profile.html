@@ -1,4 +1,5 @@
 {% extends 'posts/base.html' %}
+{% load static %}
 {% load materializecss %}
 {% block content %}
         <div class="card-panel grey lighten-5 z-depth-2">
@@ -7,7 +8,7 @@
                   {% comment %} {% if user.profile.picture %}
                     <img style="margin-top:12%" width="125" height="125" src="{{ user.profile.picture.url }}" alt="profile-picture" class=" circle responsive-img z-depth-3">
                   {% else %} {% endcomment %}
-                    <img style="margin-top:12%" width="125" height="125" src="/media/default.jpg" alt="profile-picture" class=" circle responsive-img z-depth-3">
+                    <img style="margin-top:12%" width="125" height="125" src="{% static "imgs/default.jpg" %}" alt="profile-picture" class=" circle responsive-img z-depth-3">
                   {% comment %} {% endif %} {% endcomment %}
                 </div>
                 <div class="col s12 m7">
@@ -22,7 +23,7 @@
                   {% comment %} {% if user.profile.picture %}
                     <img style="margin-top:12%" width="125" height="125" src="{{ user.profile.picture.url }}" alt="profile-picture" class=" circle responsive-img z-depth-3">
                   {% else %} {% endcomment %}
-                    <img style="margin-top:12%" width="125" height="125" src="/media/default.jpg" alt="profile-picture" class=" circle responsive-img z-depth-3">
+                    <img style="margin-top:12%" width="125" height="125" src="{% static "imgs/default.jpg" %}" alt="profile-picture" class=" circle responsive-img z-depth-3">
                   {% comment %} {% endif %} {% endcomment %}
                 </div>
                 <div class="col s12 m6">

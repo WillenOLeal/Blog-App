@@ -1,11 +1,12 @@
 {% extends 'posts/base.html' %}
+{% load static %}
 
 {% block content %}
     <div class="card z-depth-2">
         <div class="card-content">
           <span style="margin-bottom: 0px" class="card-title teal-text">{{ post.title|title }}</span>
           <small class="grey-text">By {{ post.author.username }} about {{ post.published_at|timesince }} ago</small>
-          <hr><br>
+          <br>
             {{ post.body|linebreaks}}
         </div>
         <div class="card-action">
@@ -16,7 +17,16 @@
             <a href="{% url 'post_update' post.slug %}" class="left">Update</a>
             <a href="{% url 'post_delete' post.slug %}" class="red-text left">Delete</a>
           {% endif %}
+          <a href="{% url 'post_list' %}" class="teal-text left">Go Back</a>
         </div>
     </div>
-    <a href="{% url 'post_list' %}" class="btn teal z-depth-2">Go Back</a>
+    
+  <ul class="collapsible">
+    <li>
+      <div class="collapsible-header"><i class="material-icons">filter_drama</i>First</div>
+      <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
+    </li>
+  </ul>
+            
 {% endblock %}
+
