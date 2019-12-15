@@ -6,7 +6,7 @@
         <div class="card-content">
           <span style="margin-bottom: 0px" class="card-title teal-text">{{ post.title|title }}</span>
           <small class="grey-text">By {{ post.author.username }} about {{ post.published_at|timesince }} ago</small>
-          <br>
+          <br><br>
             {{ post.body|linebreaks}}
         </div>
         <div class="card-action">

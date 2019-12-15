@@ -9,9 +9,9 @@ class PostForm(forms.ModelForm):
         model = Post
         fields = ('title', 'body')
 
-    def clean_title(self):
-        title = self.cleaned_data['title']
-        slug = slugify(title)
-        if Post.objects.filter(slug=slug).exists():
-            raise ValidationError('A Post with this title already exists.')
-        return title
+    # def clean_title(self):
+    #     title = self.cleaned_data['title']
+    #     slug = slugify(title)
+    #     if Post.objects.filter(slug=slug).exists():
+    #         raise ValidationError('A Post with this title already exists.')
+    #     return title

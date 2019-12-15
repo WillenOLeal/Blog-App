@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
+import uuid
 
 
 class Post(models.Model):
@@ -9,7 +10,8 @@ class Post(models.Model):
     body = models.TextField()
     published_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    slug = models.SlugField(editable=False, max_length=100, unique=True, null=False)
+    slug = models.SlugField(
+        editable=False, max_length=100, unique=True, null=False)
     author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     def __str__(self):
@@ -17,7 +19,8 @@ class Post(models.Model):
 
     def save(self, *args, **kwargs):
         post_title = self.title
-        self.slug = slugify(post_title, allow_unicode=True)
+        slug = slugify(post_title, allow_unicode=True)
+        self.slug = slug + '-' + str(uuid.uuid4())
         super().save(*args, **kwargs)
 
     @property

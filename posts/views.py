@@ -31,6 +31,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
 class PostListView(ListView):
     model = Post
+    paginate_by = 5
     context_object_name = 'posts'
     ordering = ['-published_at']
 

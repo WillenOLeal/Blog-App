@@ -2,7 +2,7 @@
 
 {% block content %}
     {% if posts %}
-         <form  action="{% url "post_search" %}" method="get">
+         <form  action="{% url "post_search" %}" method="GET">
            <div class="row">
               <div class="input-field col s12">
                 <i class="material-icons prefix">search</i>
@@ -11,24 +11,42 @@
               </div>
             </div>
         </form> 
-        {% for post in posts %}
-            <div class="card z-depth-2">
-                <div class="card-content">
-                  <a href="{% url 'post_detail' post.slug %}" class="orange-text"><span class="card-title">{{ post.title|title }}</span></a>
-                  <p>{{ post.body|linebreaks|truncatechars:150}}
-                     {% if post.body|length > 150 %}
-                        <a href="{% url 'post_detail' post.slug %}" class="orange-text">Read More</a>
-                     {% endif %}
-                  </p>
-                </div>
-                <div class="card-action">
-                  <small class="grey-text lighten-1">{{ post.author.username }} {{ post.published_at|date:"M d, Y" }}</small>
-                  <span class="orange-text right"> {{ post.comments_count }} </span><i style="margin-right: 1%" class="teal-text right material-icons">comment</i>
-                  <span class="orange-text right"> {{ post.views_count }} </span><i style="margin-right: 1%" class="teal-text right material-icons">visibility</i>
-                  <a href="{% url 'post_like' post.slug %}"><span class="right"> {{ post.likes_count }} </span><i style="margin-right: 1%" class="teal-text right material-icons">thumb_up</i></a>
-                </div>
-            </div>
-        {% endfor %}
+        <div class="infinite-container">
+          {% for post in posts %}
+              <div class="infinite-item">
+                <div class="card z-depth-2">
+                    <div class="card-content">
+                      <a href="{% url 'post_detail' post.slug %}" class="orange-text"><span class="card-title">{{ post.title|title }}</span></a>
+                      <p>{{ post.body|linebreaks|truncatechars:150}}
+                        {% if post.body|length > 150 %}
+                            <a href="{% url 'post_detail' post.slug %}" class="orange-text">Read More</a>
+                        {% endif %}
+                      </p>
+                    </div>
+                    <div class="card-action">
+                      <small class="grey-text lighten-1">{{ post.author.username }} {{ post.published_at|date:"M d, Y" }}</small>
+                      <span class="orange-text right"> {{ post.comments_count }} </span><i style="margin-right: 1%" class="teal-text right material-icons">comment</i>
+                      <span class="orange-text right"> {{ post.views_count }} </span><i style="margin-right: 1%" class="teal-text right material-icons">visibility</i>
+                      <a href="{% url 'post_like' post.slug %}"><span class="right"> {{ post.likes_count }} </span><i style="margin-right: 1%" class="teal-text right material-icons">thumb_up</i></a>
+                    </div>
+                  </div>
+              </div>
+            {% endfor %}
+          </div>
+
+    <div class="loading" style="display: none;">
+    <br>
+      <div class="progress">
+        <div class="indeterminate"></div>
+      </div>
+    <br>
+    </div>
+
+
+    {% if page_obj.has_next %}
+      <a class="infinite-more-link" href="?page={{ page_obj.next_page_number }}"></a>
+    {% endif %}
+
     {% else %}
         <div class="card z-depth-2">
             <div class="card-content center-align">
@@ -46,3 +64,18 @@
       </div>
     {% endif %}
 {% endblock %}
+
+{% block custom_js %}
+<script>
+    var infinite = new Waypoint.Infinite({
+      element: $('.infinite-container')[0],
+      onBeforePageLoad: function () {
+        $('.loading').show();
+      },
+      onAfterPageLoad: function ($items) {
+        $('.loading').hide();
+      }
+    });
+</script>
+{% endblock %}
+ 
