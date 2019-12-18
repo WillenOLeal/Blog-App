@@ -27,7 +27,7 @@
                       <small class="grey-text lighten-1">{{ post.author.username }} {{ post.published_at|date:"M d, Y" }}</small>
                       <span class="orange-text right"> {{ post.comments_count }} </span><i style="margin-right: 1%" class="teal-text right material-icons">comment</i>
                       <span class="orange-text right"> {{ post.views_count }} </span><i style="margin-right: 1%" class="teal-text right material-icons">visibility</i>
-                      <a href="{% url 'post_like' post.slug %}"><span class="right"> {{ post.likes_count }} </span><i style="margin-right: 1%" class="teal-text right material-icons">thumb_up</i></a>
+                      <a class="likebtn"  data-url="{% url 'post_like' post.slug %}" likes-count="{{ post.likes_count }}"><span class="right"> {{ post.likes_count }} </span><i style="margin-right: 1%" class="teal-text right material-icons">thumb_up</i></a>
                     </div>
                   </div>
               </div>
@@ -76,6 +76,35 @@
         $('.loading').hide();
       }
     });
+
+{% if user.is_authenticated %}
+    $(document).on("click", '.likebtn', function(e) { 
+      e.preventDefault()
+      var this_ = $(this);
+      var likeUrl = this_.attr('data-url');
+      var likesCount = parseInt(this_.attr('likes-count'));
+
+      $.ajax({
+        url: likeUrl, 
+        method: 'GET',
+        data: {},
+        success: function(data){
+          this_.find('span').text(data.newCount);
+     
+        }
+        /*error: function(error){
+          console.log(error);
+          console.log("error");
+        }*/
+      }); 
+    });
+  {% endif %}
+
+
+   {% comment %} $(document).on("click", 'i', function(event) { 
+    $(this).removeClass('teal-text');
+  }); {% endcomment %}
+  
 </script>
 {% endblock %}
  

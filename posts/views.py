@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from .forms import PostForm
-from django.http import HttpResponseRedirect
+from django.http import JsonResponse
 from django.db.models import Q
 
 
@@ -90,16 +90,19 @@ class SearchResultView(ListView):
         query = self.request.GET.get('search_string')
         return Post.objects.filter(
             Q(title__icontains=query) | Q(body__icontains=query)
-        )
+        ).order_by("-published_at")
 
 
 @login_required
 def like_it(request, slug):
     post = get_object_or_404(Post, slug=slug)
+
     try:
+        newCount = post.likes_count - 1
         like = Like.objects.get(author=request.user, post=post)
         like.delete()
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        return JsonResponse({'newCount': newCount})
+
     except Like.DoesNotExist:
         Like.objects.create(author=request.user, post=post)
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        return JsonResponse({'newCount': post.likes_count})
