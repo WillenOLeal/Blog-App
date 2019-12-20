@@ -26,7 +26,7 @@
                     <div class="card-action">
                       <small class="grey-text lighten-1">{{ post.author.username }} {{ post.published_at|date:"M d, Y" }}</small>
                       <span class="orange-text right"> {{ post.comments_count }} </span><i style="margin-right: 1%" class="teal-text right material-icons">comment</i>
-                      <span class="orange-text right"> {{ post.views_count }} </span><i style="margin-right: 1%" class="teal-text right material-icons">visibility</i>
+                      <span class="hide-on-small-only orange-text right"> {{ post.views_count }} </span><i style="margin-right: 1%" class="hide-on-small-only teal-text right material-icons">visibility</i>
                       <a class="likebtn"  data-url="{% url 'post_like' post.slug %}" likes-count="{{ post.likes_count }}"><span class="right"> {{ post.likes_count }} </span><i style="margin-right: 1%" class="teal-text right material-icons">thumb_up</i></a>
                     </div>
                   </div>

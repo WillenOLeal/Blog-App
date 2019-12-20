@@ -10,17 +10,17 @@
             {{ post.body|linebreaks}}
         </div>
         <div class="card-action">
-          <span class="orange-text right"> {{ post.comments_count }} </span><i style="margin-right: 1%" class="teal-text right material-icons">comment</i>
-          <span class="orange-text right"> {{ post.views_count }} </span><i style="margin-right: 1%" class="teal-text right material-icons">visibility</i>
-          <a href="{% url 'post_like' post.slug %}"><span class="right"> {{ post.likes_count }} </span><i style="margin-right: 1%" class="teal-text right material-icons">thumb_up</i></a>
+          <span class="hide-on-small-only orange-text right"> {{ post.views_count }} </span><i style="margin-right: 1%" class="hide-on-small-only teal-text right material-icons">visibility</i>
+          <a class="likebtn"  data-url="{% url 'post_like' post.slug %}" likes-count="{{ post.likes_count }}"><span class="right"> {{ post.likes_count }} </span><i style="margin-right: 1%" class="teal-text right material-icons">thumb_up</i></a>
           {% if post.author == user %}
             <a href="{% url 'post_update' post.slug %}" class="left">Update</a>
             <a href="{% url 'post_delete' post.slug %}" class="red-text left">Delete</a>
           {% endif %}
-          <a href="{% url 'post_list' %}" class="teal-text left">Go Back</a>
+          <a href="{% url 'post_list' %}" class="hide-on-med-and-down teal-text left">Go Back</a>
         </div>
     </div>
-    
+  <br><br>
+  <h5 class="center-align teal-text">{{ post.comments_count }} Comments</h5>
   <ul class="collapsible">
     <li>
       <div class="collapsible-header"><i class="material-icons">filter_drama</i>First</div>
@@ -30,3 +30,27 @@
             
 {% endblock %}
 
+{% block custom_js %}
+<script>
+
+{% if user.is_authenticated %}
+    $(document).on("click", '.likebtn', function(e) { 
+      e.preventDefault()
+      var this_ = $(this);
+      var likeUrl = this_.attr('data-url');
+      var likesCount = parseInt(this_.attr('likes-count'));
+
+      $.ajax({
+        url: likeUrl, 
+        method: 'GET',
+        data: {},
+        success: function(data){
+          this_.find('span').text(data.newCount);
+     
+        }
+      }); 
+    });
+  {% endif %}
+
+</script>
+{% endblock %}
