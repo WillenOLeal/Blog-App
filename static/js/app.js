@@ -3,5 +3,4 @@ $(document).ready(function () {
     $(".hideit").click(function () {
         $("#hideme").toggle();
     });
-    $('.collapsible').collapsible();
 });

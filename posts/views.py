@@ -3,11 +3,12 @@ from django.urls import reverse
 from django.contrib import messages
 from .models import Post, Comment, Like, Visualization
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
+from django.views.generic.list import MultipleObjectMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
-from .forms import PostForm
+from .forms import PostForm, CommentForm
 from django.http import JsonResponse
 from django.db.models import Q
 
@@ -36,8 +37,9 @@ class PostListView(ListView):
     ordering = ['-published_at']
 
 
-class PostDetailView(DetailView):
+class PostDetailView(DetailView,  MultipleObjectMixin):
     model = Post
+    paginate_by = 1
 
     def get_object(self, **kwargs):
         object = super().get_object(**kwargs)
@@ -45,6 +47,24 @@ class PostDetailView(DetailView):
             Visualization.objects.get_or_create(
                 author=self.request.user, post=object)
         return object
+
+    def post(self, *args, **kwargs):
+        form = CommentForm(self.request.POST)
+        if form.is_valid():
+            comment = form.instance
+            comment.post = self.get_object()
+            comment.author = self.request.user
+            comment.save()
+            return redirect('post_detail', slug=self.get_object().slug)
+
+    def get_context_data(self, **kwargs):
+        object_list = Comment.objects.filter(
+            post=self.get_object()).order_by('-published_at')
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        context.update({
+            'form': CommentForm()
+        })
+        return context
 
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):

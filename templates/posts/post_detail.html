@@ -1,5 +1,6 @@
 {% extends 'posts/base.html' %}
 {% load static %}
+{% load materializecss %}
 
 {% block content %}
     <div class="card z-depth-2">
@@ -20,18 +21,76 @@
         </div>
     </div>
   <br><br>
+
+{% if user.is_authenticated %}
+  <form method="POST">
+    <div class="row">
+      <div class="col s12">
+        {% csrf_token %}
+          {{ form.body | materializecss }}
+      </div>
+      <div class="col s12">
+        <button type="submit" class="right btn waves-effect waves-light teal">Comment</button>
+    </div>
+    </div>
+  </form>
+{% else %}
+<div>
+   <input disabled value="Login to comment..." id="disabled" type="text" class="validate"><p></p>
+  <a href="{% url  'login' %}?next={{ request.path }}" class="right btn waves-effect waves-light teal">Login</a>
+</div>
+{% endif %}
+         
+  <br><br>
   <h5 class="center-align teal-text">{{ post.comments_count }} Comments</h5>
-  <ul class="collapsible">
-    <li>
-      <div class="collapsible-header"><i class="material-icons">filter_drama</i>First</div>
-      <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
-    </li>
-  </ul>
+  {% if object_list %}
+   <div class="infinite-container">
+      {% for comment  in object_list %}
+      <div class="card  infinite-item z-depth-2">
+        <div class="card-content row valign-wrapper">
+            <div class="col s2 center-align">
+              <img width="50" height="50" src="{% static "imgs/default.jpg" %}" alt="profile-picture" class=" circle">
+              {{ comment.author.username }}
+            </div>
+              <div class="col s10"><span>{{ comment.body|linebreaks }}<br><br><small>{{ comment.published_at| timesince }} ago</small></span>
+              </div>
+            </div>
+          
+        </div>
+      {% endfor %}
+    </div>
+
+ <div class="loading" style="display: none;">
+    <br>
+      <div class="progress">
+        <div class="indeterminate"></div>
+      </div>
+    <br>
+    </div>
+
+    {% if page_obj.has_next %}
+      <a class="infinite-more-link" href="?page={{ page_obj.next_page_number }}"></a>
+    {% endif %}
+
+  {% endif %}
+
+
             
 {% endblock %}
 
 {% block custom_js %}
 <script>
+
+ var infinite = new Waypoint.Infinite({
+      element: $('.infinite-container')[0],
+      onBeforePageLoad: function () {
+        $('.loading').show();
+      },
+      onAfterPageLoad: function ($items) {
+        $('.loading').hide();
+      },
+    });
+
 
 {% if user.is_authenticated %}
     $(document).on("click", '.likebtn', function(e) { 
@@ -46,7 +105,6 @@
         data: {},
         success: function(data){
           this_.find('span').text(data.newCount);
-     
         }
       }); 
     });
