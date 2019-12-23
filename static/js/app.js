@@ -1,6 +1,6 @@
 $(document).ready(function () {
     $(".sidenav").sidenav();
     $(".hideit").click(function () {
-        $("#hideme").toggle();
+        $(".hideme").slideToggle(1250);
     });
 });

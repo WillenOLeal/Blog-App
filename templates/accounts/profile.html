@@ -3,30 +3,30 @@
 {% load materializecss %}
 {% block content %}
         <div class="card-panel grey lighten-5 z-depth-2">
-            <div class="row valign-wrapper hide-on-small-only">
-                <div class="col s12 m5 center-align">
+            <div class="row valign-wrapper  hide-on-med-and-down">
+                <div class="col s12 m4 center-align">
                   {% comment %} {% if user.profile.picture %}
                     <img style="margin-top:12%" width="125" height="125" src="{{ user.profile.picture.url }}" alt="profile-picture" class=" circle responsive-img z-depth-3">
                   {% else %} {% endcomment %}
                     <img style="margin-top:12%" width="125" height="125" src="{% static "imgs/default.jpg" %}" alt="profile-picture" class=" circle responsive-img z-depth-3">
                   {% comment %} {% endif %} {% endcomment %}
                 </div>
-                <div class="col s12 m7">
+                <div class="col s12 m8">
                   <h5 class="teal-text">{{ user.username }}</h5>
                   <span class="grey-text">{{ user.email }}</span>
                   <div class="mtop">
                   </div>
                 </div>
             </div>
-            <div class="row hide-on-med-and-up center-align">
-                <div class="col s12 m6">
+            <div class="row hide-on-large-only center-align">
+                <div class="col s12">
                   {% comment %} {% if user.profile.picture %}
                     <img style="margin-top:12%" width="125" height="125" src="{{ user.profile.picture.url }}" alt="profile-picture" class=" circle responsive-img z-depth-3">
                   {% else %} {% endcomment %}
                     <img style="margin-top:12%" width="125" height="125" src="{% static "imgs/default.jpg" %}" alt="profile-picture" class=" circle responsive-img z-depth-3">
                   {% comment %} {% endif %} {% endcomment %}
                 </div>
-                <div class="col s12 m6">
+                <div class="col s12">
                   <h5 class="teal-text">{{ user.username }}</h5>
                   <span class="grey-text">{{ user.email }}</span>
                   <div class="mtop">
@@ -35,7 +35,7 @@
             </div>
           </div>
 
-          <div class="card" id="hideme" style="display: none">
+          <div class="card hideme" style="display: none">
               <div class="card-content center-align z-depth-2">
                   <h5 class="grey-text lighten-1">Edit Profile</h5>
                   {% comment %} <form method="POST" enctype="multipart/form-data"> {% endcomment %}
