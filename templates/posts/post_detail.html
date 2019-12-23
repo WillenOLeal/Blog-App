@@ -42,12 +42,15 @@
 {% endif %}
          
   <br><br>
-  <h5 class="center-align teal-text">{{ post.comments_count }} Comments</h5>
+  <h5 id="commentsCount" class="center-align teal-text">{{ post.comments_count }} Comment(s)</h5>
   {% if object_list %}
    <div class="infinite-container">
       {% for comment  in object_list %}
       <div class="card  infinite-item z-depth-2">
         <div class="card-content row ">
+            {% if request.user == comment.author %}
+              <a href="" class="deleteComm" delete-url="{% url 'comment_delete' comment.id %}"><i class="material-icons pink-text   lighten-4 right">delete</i></a>
+            {% endif %}
             <div class="col s12 m4 center-align">
               <img width="50" height="50" src="{% static "imgs/default.jpg" %}" alt="profile-picture" class=" circle">
               <br>{{ comment.author.username }}<br><br>
@@ -125,6 +128,28 @@ $(document).on("click", '.read', function(e) {
         }
       }); 
     });
+
+    $(document).on("click", '.deleteComm', function(e) { 
+      e.preventDefault()
+      var this_comm = $(this);
+      var commUrl = this_comm.attr('delete-url');
+
+      $.ajax({
+        url: commUrl, 
+        method: 'GET',
+        data: {},
+        success: function(data){
+          if (data.isDeleted){
+            this_comm.closest('.card').remove();
+            $('#commentsCount').text(data.commCount + ' Comment(s)'); 
+          }
+          else {
+            alert('Unable to delete comment');
+          }
+        }
+      }); 
+    });
+
   {% endif %}
 
 </script>

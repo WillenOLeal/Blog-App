@@ -39,7 +39,7 @@ class PostListView(ListView):
 
 class PostDetailView(DetailView,  MultipleObjectMixin):
     model = Post
-    paginate_by = 1
+    paginate_by = 3
 
     def get_object(self, **kwargs):
         object = super().get_object(**kwargs)
@@ -126,3 +126,14 @@ def like_it(request, slug):
     except Like.DoesNotExist:
         Like.objects.create(author=request.user, post=post)
         return JsonResponse({'newCount': post.likes_count})
+
+
+@login_required
+def comment_delete(request, id):
+    try:
+        comment = Comment.objects.get(id=id)
+        post = Post.objects.get(pk=comment.post.pk)
+        comment.delete()
+        return JsonResponse({'isDeleted': True, 'commCount': post.comments_count})
+    except Comment.DoesNotExist:
+        return JsonResponse({'isDeleted': False})
