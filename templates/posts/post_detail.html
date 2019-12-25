@@ -56,8 +56,8 @@
               <br>{{ comment.author.username }}<br><br>
             </div>
               <div class="col s12 m8">
-              {% if comment.body|length > 15 %}
-                {{ comment.body| slice:":15" | linebreaksbr }}<span class="dots">...<br></span><span class="more" style="display: none">{{ comment.body| slice:"15:" | linebreaksbr }}</span>
+              {% if comment.body|length > 150 %}
+                {{ comment.body| slice:":150" | linebreaksbr }}<span class="dots">...<br></span><span class="more" style="display: none">{{ comment.body| slice:"15:" | linebreaksbr }}</span>
                 <a class="read orange-text">Read More</a>
               {% else %}
                 {{ comment.body }}

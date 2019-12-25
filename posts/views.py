@@ -50,12 +50,13 @@ class PostDetailView(DetailView,  MultipleObjectMixin):
 
     def post(self, *args, **kwargs):
         form = CommentForm(self.request.POST)
-        if form.is_valid():
+        if form.is_valid() and form.has_changed():
             comment = form.instance
             comment.post = self.get_object()
             comment.author = self.request.user
             comment.save()
             return redirect('post_detail', slug=self.get_object().slug)
+        return redirect('post_detail', slug=self.get_object().slug)
 
     def get_context_data(self, **kwargs):
         object_list = Comment.objects.filter(
@@ -133,7 +134,10 @@ def comment_delete(request, id):
     try:
         comment = Comment.objects.get(id=id)
         post = Post.objects.get(pk=comment.post.pk)
-        comment.delete()
-        return JsonResponse({'isDeleted': True, 'commCount': post.comments_count})
+        if request.user == comment.author:
+            comment.delete()
+            return JsonResponse({'isDeleted': True, 'commCount': post.comments_count})
+        else:
+            return JsonResponse({'isDeleted': False, })
     except Comment.DoesNotExist:
         return JsonResponse({'isDeleted': False})
