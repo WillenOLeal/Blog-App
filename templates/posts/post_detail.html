@@ -23,7 +23,7 @@
   <br><br>
 
 {% if user.is_authenticated %}
-  <form method="POST">
+  <form method="POST" id="comment-form" action-url="{% url "post_detail" post.slug %}">
     <div class="row">
       <div class="col s12">
         {% csrf_token %}
@@ -42,11 +42,12 @@
 {% endif %}
          
   <br><br>
-  <h5 id="commentsCount" class="center-align teal-text">{{ post.comments_count }} Comment(s)</h5>
+  <h5  class="center-align teal-text"><span id="commentsCount">{{ post.comments_count }}</span> Comment(s)</h5>
+  <div id="posts"></div>
   {% if object_list %}
    <div class="infinite-container">
       {% for comment  in object_list %}
-      <div class="card  infinite-item z-depth-2">
+      <div class="card infinite-item z-depth-2">
         <div class="card-content row ">
             {% if request.user == comment.author %}
               <a href="" class="deleteComm" delete-url="{% url 'comment_delete' comment.id %}"><i class="material-icons pink-text   lighten-4 right">delete</i></a>
@@ -55,12 +56,12 @@
               <img width="50" height="50" src="{% static "imgs/default.jpg" %}" alt="profile-picture" class=" circle">
               <br>{{ comment.author.username }}<br><br>
             </div>
-              <div class="col s12 m8">
+              <div class="col s12 m8" style="word-wrap: break-word">
               {% if comment.body|length > 150 %}
                 {{ comment.body| slice:":150" | linebreaksbr }}<span class="dots">...<br></span><span class="more" style="display: none">{{ comment.body| slice:"15:" | linebreaksbr }}</span>
                 <a class="read orange-text">Read More</a>
               {% else %}
-                {{ comment.body }}
+                {{ comment.body | linebreaksbr }}
               {% endif %}
                 <br><br><small>{{ comment.published_at| timesince }} ago</small>
               </div>
@@ -141,7 +142,7 @@ $(document).on("click", '.read', function(e) {
         success: function(data){
           if (data.isDeleted){
             this_comm.closest('.card').remove();
-            $('#commentsCount').text(data.commCount + ' Comment(s)'); 
+            $('#commentsCount').text(data.commCount); 
           }
           else {
             alert('Unable to delete comment');
@@ -149,6 +150,52 @@ $(document).on("click", '.read', function(e) {
         }
       }); 
     });
+
+    $(document).on('submit', '#comment-form', function(e){
+      e.preventDefault()
+        var this_ = $(this)
+        if(!($('#comment-form').find('#id_body').val().trim())){
+             return;           
+        }
+        var  actUrl = this_.attr('action-url');
+        $.ajax({
+          type:'POST',
+          dataType:'json', 
+          url: actUrl,
+          data:{
+              body:$('#id_body').val(),
+              csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+              action: 'POST',
+          },
+    
+       
+        
+          success:function(json){
+            
+              document.getElementById("comment-form").reset();
+              $("#posts").prepend(
+                '<div class="card  z-depth-2">' +
+                    '<div class="card-content row ">' +
+                        '<a href="" class="deleteComm" delete-url="/' + json.id + '/delete-comment/"><i class="material-icons pink-text   lighten-4 right">delete</i></a>' +
+                        '<div class="col s12 m4 center-align">' +
+                          '<img width="50" height="50" src="{% static "imgs/default.jpg" %}" alt="profile-picture" class=" circle">' +
+                          '<br> {{request.user.username }}<br>'  +
+                        '</div>' +
+                          '<div style="word-wrap: break-word" class="col s12 m8">' + '' + 
+                            '<span> ' +  json.body.replace( /\n/g, '<br \\>' )  + '</span>' +
+                        '<br><br><small>0 minutes ago</small>' + 
+                        ' </div>' +
+                      '</div>'  +
+                    '</div>'
+              );
+              
+              var commentCount = parseInt($('#commentsCount').text()) + 1;
+              $('#commentsCount').text(commentCount);
+
+           }
+      });
+});
+
 
   {% endif %}
 

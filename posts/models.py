@@ -18,9 +18,10 @@ class Post(models.Model):
         return f'{self.title} by {self.author.username}'
 
     def save(self, *args, **kwargs):
-        post_title = self.title
-        slug = slugify(post_title, allow_unicode=True)
-        self.slug = slug + '-' + str(uuid.uuid4())
+        if not self.slug:
+            post_title = self.title
+            slug = slugify(post_title, allow_unicode=True)
+            self.slug = slug + '-' + str(uuid.uuid4())
         super().save(*args, **kwargs)
 
     @property

@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from .forms import PostForm, CommentForm
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.db.models import Q
 
 
@@ -48,15 +48,33 @@ class PostDetailView(DetailView,  MultipleObjectMixin):
                 author=self.request.user, post=object)
         return object
 
+    # def post(self, *args, **kwargs):
+    #     form = CommentForm(self.request.POST)
+    #     if form.is_valid() and form.has_changed():
+    #         comment = form.instance
+    #         comment.post = self.get_object()
+    #         comment.author = self.request.user
+    #         comment.save()
+    #         return redirect('post_detail', slug=self.get_object().slug)
+    #     return redirect('post_detail', slug=self.get_object().slug)
+
     def post(self, *args, **kwargs):
-        form = CommentForm(self.request.POST)
-        if form.is_valid() and form.has_changed():
-            comment = form.instance
-            comment.post = self.get_object()
-            comment.author = self.request.user
-            comment.save()
-            return redirect('post_detail', slug=self.get_object().slug)
-        return redirect('post_detail', slug=self.get_object().slug)
+        if self.request.is_ajax():
+            data = {}
+
+            form = CommentForm(self.request.POST)
+            if form.is_valid() and form.has_changed():
+                comment = form.instance
+                comment.post = self.get_object()
+                comment.author = self.request.user
+                comment.save()
+                data['body'] = comment.body
+                data['id'] = comment.pk
+
+            data['success'] = True
+            return JsonResponse(data)
+        else:
+            raise Http404
 
     def get_context_data(self, **kwargs):
         object_list = Comment.objects.filter(
@@ -71,7 +89,7 @@ class PostDetailView(DetailView,  MultipleObjectMixin):
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     form_class = PostForm
-    success_url = reverse_lazy('post_list')
+   # success_url = reverse_lazy('post_detail')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -85,6 +103,10 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         if post.author == self.request.user:
             return True
         return False
+
+    def get_success_url(self):
+        post_slug = self.kwargs['slug']
+        return reverse_lazy('post_detail', kwargs={'slug': post_slug})
 
 
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -116,28 +138,34 @@ class SearchResultView(ListView):
 
 @login_required
 def like_it(request, slug):
-    post = get_object_or_404(Post, slug=slug)
+    if request.is_ajax():
+        post = get_object_or_404(Post, slug=slug)
 
-    try:
-        newCount = post.likes_count - 1
-        like = Like.objects.get(author=request.user, post=post)
-        like.delete()
-        return JsonResponse({'newCount': newCount})
+        try:
+            newCount = post.likes_count - 1
+            like = Like.objects.get(author=request.user, post=post)
+            like.delete()
+            return JsonResponse({'newCount': newCount})
 
-    except Like.DoesNotExist:
-        Like.objects.create(author=request.user, post=post)
-        return JsonResponse({'newCount': post.likes_count})
+        except Like.DoesNotExist:
+            Like.objects.create(author=request.user, post=post)
+            return JsonResponse({'newCount': post.likes_count})
+    else:
+        raise Http404
 
 
 @login_required
 def comment_delete(request, id):
-    try:
-        comment = Comment.objects.get(id=id)
-        post = Post.objects.get(pk=comment.post.pk)
-        if request.user == comment.author:
-            comment.delete()
-            return JsonResponse({'isDeleted': True, 'commCount': post.comments_count})
-        else:
-            return JsonResponse({'isDeleted': False, })
-    except Comment.DoesNotExist:
-        return JsonResponse({'isDeleted': False})
+    if request.is_ajax():
+        try:
+            comment = Comment.objects.get(id=id)
+            post = Post.objects.get(pk=comment.post.pk)
+            if request.user == comment.author:
+                comment.delete()
+                return JsonResponse({'isDeleted': True, 'commCount': post.comments_count})
+            else:
+                return JsonResponse({'isDeleted': False, })
+        except Comment.DoesNotExist:
+            return JsonResponse({'isDeleted': False})
+    else:
+        raise Http404
