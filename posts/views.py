@@ -166,6 +166,6 @@ def comment_delete(request, id):
             else:
                 return JsonResponse({'isDeleted': False, })
         except Comment.DoesNotExist:
-            return JsonResponse({'isDeleted': False})
+            raise Http404
     else:
         raise Http404
